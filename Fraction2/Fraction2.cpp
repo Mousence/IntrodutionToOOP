@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 using namespace std;
 
@@ -38,7 +39,8 @@ public:
 		if (denominator == 0)denominator = 1;
 		this->denominator = denominator;
 	}
-	void set_values(int numerator, int denominator) {
+	void set_values(int integer, int numerator, int denominator) {
+		this->integer = integer;
 		this->numerator = numerator;
 		if (denominator == 0)denominator = 1;
 		this->denominator = denominator;
@@ -220,12 +222,22 @@ std::ostream& operator<<(std::ostream& os, const Fraction& obj){
 	return os;
 }
 std::istream& operator>>(std::istream& is, Fraction& obj){
-    int numerator, denominator;
-    is >> numerator >> denominator;
-    if (denominator != 0) {
-        obj.set_values( numerator, denominator);
-    }
-	obj.to_proper();
+	const int SIZE = 256;
+	char sz_buffer[SIZE]{};
+	is >> sz_buffer;
+	int number[3]{}; int n = 0;
+	char delimiters[] = "()/";
+	for (char* pch = strtok(sz_buffer, delimiters); pch; pch = strtok(NULL, delimiters)) {
+		number[n++] = std::atoi(pch); // atoi() - означает ascii-string to integer.
+	}
+	switch (n) {
+	case 1: obj = Fraction(number[0]);
+		break;
+	case 2: obj = Fraction(number[0], number[1]);
+		break;
+	case 3: obj = Fraction(number[0], number[1], number[2]);
+		break;
+	}
     return is;
 }
 
